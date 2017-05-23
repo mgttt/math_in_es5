@@ -43,6 +43,9 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 		var factor = Math.pow(10, decimalPlaces);
 		return Math.round(value * factor) / factor;
 	}
+	var _square=function(v){return v*v;};
+	var _exp=Math.exp;
+	var _sqrt=Math.sqrt;
 	return new (function(mean,standardDeviation){
 		this.mean = mean || 0;
 		this.standardDeviation = standardDeviation || 1;
@@ -51,25 +54,22 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 			return (value - this.mean) / this.standardDeviation;
 		};
 		this.pdf=function(value){
-			//var dividend = Math.pow(Math.E, -Math.pow(value - this.mean, 2) / (2 * Math.pow(this.standardDeviation, 2)));
-			var dividend = Math.exp(-Math.pow(value - this.mean, 2) / (2 * Math.pow(this.standardDeviation, 2)));
-			var divisor = this.standardDeviation * Math.sqrt(2 * Math.PI);
-			return dividend / divisor;
+			return _exp(-_square(value - this.mean) / (2 * _square(this.standardDeviation))) / (this.standardDeviation * _sqrt(2 * Math.PI));
 		}
 		this.cdf=function(value){
 			var zScore = _round(this.zScore(value),2);
 			if (zScore === 0) {
 				return 0.5;
-				} else if (zScore <= -3.5) {
+			} else if (zScore <= -3.5) {
 				return 0;
-				} else if (zScore >= 3.5) {
+			} else if (zScore >= 3.5) {
 				return 1;
 			}
 			var absZScore = Math.abs(zScore);
 			var zRow = Math.floor(absZScore * 10) / 10;
 			var zCol = _round(Math.round(absZScore * 100) % 10 / 100, 2);
 			var zColIndex = _zTable.z.indexOf(zCol);
-			var absPercentile = _zTable[zRow.toString()][zColIndex];
+			var absPercentile = _zTable[""+zRow][zColIndex];
 			return zScore < 0 ? 1 - absPercentile : absPercentile;
 		};
 	})(_mean,_standardDeviation);
