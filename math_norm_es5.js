@@ -51,7 +51,8 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 			return (value - this.mean) / this.standardDeviation;
 		};
 		this.pdf=function(value){
-			var dividend = Math.pow(Math.E, -Math.pow(value - this.mean, 2) / (2 * Math.pow(this.standardDeviation, 2)));
+			//var dividend = Math.pow(Math.E, -Math.pow(value - this.mean, 2) / (2 * Math.pow(this.standardDeviation, 2)));
+			var dividend = Math.exp(-Math.pow(value - this.mean, 2) / (2 * Math.pow(this.standardDeviation, 2)));
 			var divisor = this.standardDeviation * Math.sqrt(2 * Math.PI);
 			return dividend / divisor;
 		}
