@@ -1,5 +1,3 @@
-//@ref https://github.com/RichieAHB/normal-distribution/blob/master/src/NormalDistribution.js
-
 if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 	var _zTable= {
 		"z"  :  [0     , 0.01  , 0.02  , 0.03  , 0.04,   0.05  , 0.06  , 0.07  , 0.08  , 0.09  ],
@@ -39,13 +37,18 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 		"3.3":  [0.9995, 0.9995, 0.9995, 0.9996, 0.9996, 0.9996, 0.9996, 0.9996, 0.9996, 0.9997],
 		"3.4":  [0.9997, 0.9997, 0.9997, 0.9997, 0.9997, 0.9997, 0.9997, 0.9997, 0.9997, 0.9998]
 	};
-	var _round=function(value, decimalPlaces) {
-		var factor = Math.pow(10, decimalPlaces);
-		return Math.round(value * factor) / factor;
-	}
 	var _square=function(v){return v*v;};
 	var _exp=Math.exp;
 	var _sqrt=Math.sqrt;
+	var _abs=Math.abs;
+	var _floor=Math.floor;
+	var _PI=Math.PI;
+	var _round=Math.round;
+	var _pow=Math.pow;
+	var _roundext=function(value, decimalPlaces) {
+		var factor = _pow(10, decimalPlaces);
+		return _round(value * factor) / factor;
+	}
 	return new (function(mean,standardDeviation){
 		this.mean = mean || 0;
 		this.standardDeviation = standardDeviation || 1;
@@ -54,10 +57,10 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 			return (value - this.mean) / this.standardDeviation;
 		};
 		this.pdf=function(value){
-			return _exp(-_square(value - this.mean) / (2 * _square(this.standardDeviation))) / (this.standardDeviation * _sqrt(2 * Math.PI));
+			return _exp(-_square(value - this.mean) / (2 * _square(this.standardDeviation))) / (this.standardDeviation * _sqrt(2 * _PI));
 		}
 		this.cdf=function(value){
-			var zScore = _round(this.zScore(value),2);
+			var zScore = _roundext(this.zScore(value),2);
 			if (zScore === 0) {
 				return 0.5;
 			} else if (zScore <= -3.5) {
@@ -65,9 +68,9 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 			} else if (zScore >= 3.5) {
 				return 1;
 			}
-			var absZScore = Math.abs(zScore);
-			var zRow = Math.floor(absZScore * 10) / 10;
-			var zCol = _round(Math.round(absZScore * 100) % 10 / 100, 2);
+			var absZScore = _abs(zScore);
+			var zRow = _floor(absZScore * 10) / 10;
+			var zCol = _roundext(_round(absZScore * 100) % 10 / 100, 2);
 			var zColIndex = _zTable.z.indexOf(zCol);
 			var absPercentile = _zTable[""+zRow][zColIndex];
 			return zScore < 0 ? 1 - absPercentile : absPercentile;
