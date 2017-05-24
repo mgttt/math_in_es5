@@ -57,8 +57,28 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 			return (value - this.mean) / this.standardDeviation;
 		};
 		this.pdf=function(value){
-			return _exp(-_square(value - this.mean) / (2 * _square(this.standardDeviation))) / (this.standardDeviation * _sqrt(2 * _PI));
+			return _exp(-_square(value - this.mean)
+			/ (2 * _square(this.standardDeviation)))
+			/ (this.standardDeviation * _sqrt(2 * _PI));
 		}
+		/*
+		@ref https://www.johndcook.com/blog/cpp_phi/
+		maximum error < 1.5 × 10-7
+		*/
+		this.cdf2=function(x){
+			var a1 =  0.254829592;
+			var a2 = -0.284496736;
+			var a3 =  1.421413741;
+			var a4 = -1.453152027;
+			var a5 =  1.061405429;
+			var p  =  0.3275911;
+			x = _abs(x)/_sqrt(2.0);
+			// A&S formula 7.1.26
+			var t = 1.0/(1.0 + p*x);
+			var y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*_exp(-x*x);
+			return 0.5*(1.0 + y*(x<0?-1:1));
+		};
+
 		this.cdf=function(value){
 			var zScore = _roundext(this.zScore(value),2);
 			if (zScore === 0) {
@@ -74,20 +94,6 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 			var zColIndex = _zTable.z.indexOf(zCol);
 			var absPercentile = _zTable[""+zRow][zColIndex];
 			return zScore < 0 ? 1 - absPercentile : absPercentile;
-		};
-		/* @ref https://www.johndcook.com/blog/cpp_phi/ */
-		this.cdf2=function(x){
-			var a1 =  0.254829592;
-			var a2 = -0.284496736;
-			var a3 =  1.421413741;
-			var a4 = -1.453152027;
-			var a5 =  1.061405429;
-			var p  =  0.3275911;
-			x = _abs(x)/_sqrt(2.0);
-			// A&S formula 7.1.26
-			var t = 1.0/(1.0 + p*x);
-			var y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*_exp(-x*x);
-			return 0.5*(1.0 + y*(x<0?-1:1));
 		};
 
 	})(_mean,_standardDeviation);
