@@ -4,7 +4,9 @@
 //T: TimeLeft 余下有效时间，可用余下天数/365大概计算获得
 //r1: risk-free rate 无风险利率（一般用银行同业利率即可），相当于投资的机会成本
 //r2: volatility of returns of the underlying asset, 资产的派息收入，一般没有(i.e.为零)
-//d: 年化标准差, 暂用 0.1363 //由统计之前的来获得？
+//d: 波幅指数 或 年化标准差, 特别地，针对 HSI 来源见 https://hk.investing.com/indices/hsi-volatility
+//   或 http://www.quamnet.com/Quote.action?stockCode=VHSI
+//   后面api化这个波幅指数，暂时先大概 hardcode测试用.
 function BlackScholes(C1P0,S,L,T,r1,r2,d){
 	if(T>0){
 		var d1 = (log(S/L)+((r1-r2)+d*d/2)*T)/(d*sqrt(T));
@@ -17,6 +19,7 @@ function BlackScholes(C1P0,S,L,T,r1,r2,d){
 		throw new Error("T must > 0");
 	}
 }
+
 //TEST
 //console.log(BlackScholes('c',21000,20800,3/365,0.0019,0.0001,0.1363));
 //console.log(BlackScholes('c',21000,22800,5/365,0.0019,0.0001,0.1363));
