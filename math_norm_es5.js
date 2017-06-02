@@ -56,6 +56,7 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 		this.zScore=function(value) {
 			return (value - this.mean) / this.standardDeviation;
 		};
+		//norm.pdf(x) = exp(-x**2/2)/sqrt(2*pi)
 		this.pdf=function(value){
 			return _exp(-_square(value - this.mean)
 			/ (2 * _square(this.standardDeviation)))
@@ -65,7 +66,7 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 		@ref https://www.johndcook.com/blog/cpp_phi/
 		maximum error < 1.5 × 10-7
 		*/
-		this.cdf2=function(x){
+		this.cdf=function(x){
 			var a1 =  0.254829592;
 			var a2 = -0.284496736;
 			var a3 =  1.421413741;
@@ -79,7 +80,7 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 			return 0.5*(1.0 + y*(x<0?-1:1));
 		};
 
-		this.cdf=function(value){
+		this.cdf_table=function(value){
 			var zScore = _roundext(this.zScore(value),2);
 			if (zScore === 0) {
 				return 0.5;
@@ -98,3 +99,6 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 
 	})(_mean,_standardDeviation);
 };
+
+
+//https://stackoverflow.com/questions/6298105/precision-of-cdf-in-scipy-stats
