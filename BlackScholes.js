@@ -7,14 +7,19 @@
 //d: 波幅指数 或 年化标准差, 特别地，针对 HSI 来源见 https://hk.investing.com/indices/hsi-volatility
 //   或 http://www.quamnet.com/Quote.action?stockCode=VHSI
 //   后面api化这个波幅指数，暂时先大概 hardcode测试用.
+
+var _log=Math.log;
+var _sqrt=Math.sqrt;
+var _exp=Math.exp;
+var _norm=Math.norm;//math_norm_es5.js
 function BlackScholes(C1P0,S,L,T,r1,r2,d){
 	if(T>0){
-		var d1 = (log(S/L)+((r1-r2)+d*d/2)*T)/(d*sqrt(T));
-		var d2 = d1 - d*sqrt(T);
+		var d1 = (_log(S/L)+((r1-r2)+d*d/2)*T)/(d*_sqrt(T));
+		var d2 = d1 - d*_sqrt(T);
 		if (C1P0==1 || C1P0=='c') //Call
-		return S*exp(-r2*T)*norm.cdf(d1)-L*exp(-r1*T)*norm.cdf(d2)
+		return S*_exp(-r2*T)*_norm.cdf(d1)-L*_exp(-r1*T)*_norm.cdf(d2)
 		else //Put
-		return L*exp(-r1*T)*norm.cdf(-d2)-S*exp(-r2*T)*norm.cdf(-d1)
+		return L*_exp(-r1*T)*_norm.cdf(-d2)-S*_exp(-r2*T)*_norm.cdf(-d1)
 	}else{
 		throw new Error("T must > 0");
 	}
