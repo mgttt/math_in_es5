@@ -11,7 +11,12 @@
 var _log=Math.log;
 var _sqrt=Math.sqrt;
 var _exp=Math.exp;
-var _norm=Math.norm;//math_norm_es5.js
+
+//var _norm=Math.norm;//<script src='math_norm_es5.js'></script>
+var math_norm_es5=require('./math_norm_es5');
+var _norm=math_norm_es5();
+
+///////////////////////////////////////////////////////////////////////////////
 function BlackScholes(C1P0,S,L,T,r1,r2,d){
 	if(T>0){
 		var d1 = (_log(S/L)+((r1-r2)+d*d/2)*T)/(d*_sqrt(T));
@@ -24,9 +29,13 @@ function BlackScholes(C1P0,S,L,T,r1,r2,d){
 		throw new Error("T must > 0");
 	}
 }
+///////////////////////////////////////////////////////////////////////////////
+
+var logger=console;
+//logger.log(_norm);
 
 //TEST
-//console.log(BlackScholes('c',21000,20800,3/365,0.0019,0.0001,0.1363));
-//console.log(BlackScholes('c',21000,22800,5/365,0.0019,0.0001,0.1363));
-//console.log(BlackScholes('p',21000,22800,3/365,0.0019,0.0001,0.1363));
-//console.log(BlackScholes('p',21000,20000,1/365,0.0019,0.0001,0.1363));
+logger.log(BlackScholes('c',21000,20800,3/365,0.0019,0.0001,0.1363));
+logger.log(BlackScholes('c',21000,22800,5/365,0.0019,0.0001,0.1363));
+logger.log(BlackScholes('p',21000,22800,3/365,0.0019,0.0001,0.1363));
+logger.log(BlackScholes('p',21000,20000,1/365,0.0019,0.0001,0.1363));

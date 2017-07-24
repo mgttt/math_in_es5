@@ -1,4 +1,4 @@
-if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
+function _norm(_mean,_standardDeviation){
 	var _zTable= {
 		"z"  :  [0     , 0.01  , 0.02  , 0.03  , 0.04,   0.05  , 0.06  , 0.07  , 0.08  , 0.09  ],
 		"0"  :  [0.5000, 0.5040, 0.5080, 0.5120, 0.5160, 0.5199, 0.5239, 0.5279, 0.5319, 0.5359],
@@ -99,6 +99,7 @@ if(!Math.norm) Math.norm=function(_mean,_standardDeviation){
 
 	})(_mean,_standardDeviation);
 };
-
-
-//https://stackoverflow.com/questions/6298105/precision-of-cdf-in-scipy-stats
+if('undefined'!=typeof module){
+	module.exports=_norm;
+}
+if(Math && !Math.norm) Math.norm=_norm;
