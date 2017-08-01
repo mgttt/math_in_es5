@@ -73,11 +73,12 @@ function _norm(_mean,_standardDeviation){
 			var a4 = -1.453152027;
 			var a5 =  1.061405429;
 			var p  =  0.3275911;
+			var sign= x<0 ? -1 : 1;
 			x = _abs(x)/_sqrt(2.0);
 			// A&S formula 7.1.26
 			var t = 1.0/(1.0 + p*x);
 			var y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*_exp(-x*x);
-			return 0.5*(1.0 + y*(x<0?-1:1));
+			return 0.5*(1.0 + y*sign);
 		};
 
 		this.cdf_table=function(value){
