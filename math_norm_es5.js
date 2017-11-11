@@ -50,19 +50,23 @@ function _norm(_mean,_standardDeviation){
 		return _round(value * factor) / factor;
 	}
 	return new (function(mean,standardDeviation){
+		//平均:
 		this.mean = mean || 0;
+		//标准方差:
 		this.standardDeviation = standardDeviation || 1;
-
+		//标准分
+		//https://en.wikipedia.org/wiki/Standard_score
 		this.zScore=function(value) {
 			return (value - this.mean) / this.standardDeviation;
 		};
+		//正态分布:
 		//norm.pdf(x) = exp(-x**2/2)/sqrt(2*pi)
 		this.pdf=function(value){
 			return _exp(-_square(value - this.mean)
 			/ (2 * _square(this.standardDeviation)))
 			/ (this.standardDeviation * _sqrt(2 * _PI));
 		}
-		/*
+		/* 标准正态的累积分布 公式计算法，误差百万级
 		@ref https://www.johndcook.com/blog/cpp_phi/
 		maximum error < 1.5 × 10-7
 		*/
@@ -74,12 +78,14 @@ function _norm(_mean,_standardDeviation){
 			var a5 =  1.061405429;
 			var p  =  0.3275911;
 			x = _abs(x)/_sqrt(2.0);
+			var sign= x<0 ? -1 : 1;
 			// A&S formula 7.1.26
 			var t = 1.0/(1.0 + p*x);
 			var y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*_exp(-x*x);
-			return 0.5*(1.0 + y*(x<0?-1:1));
+			return 0.5*(1.0 + y*sign);
 		};
 
+		//查表插值法（Interpolation with table-lookup):
 		this.cdf_table=function(value){
 			var zScore = _roundext(this.zScore(value),2);
 			if (zScore === 0) {
