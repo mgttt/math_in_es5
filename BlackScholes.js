@@ -20,7 +20,8 @@ var _norm=math_norm_es5();
 function BlackScholes(C1P0,S,L,T,r1,r2,d){
 	if(T>0){
 		var d1 = (_log(S/L)+((r1-r2)+d*d/2)*T)/(d*_sqrt(T));
-		var d2 = d1 - d*_sqrt(T);
+		//var d2 = (_log(S/L)+((r1-r2)-d*d/2)*T)/(d*_sqrt(T));
+		var d2 = d1 - d*_sqrt(T);//OK TOO
 		if (C1P0==1 || C1P0=='c') //Call
 		return S*_exp(-r2*T)*_norm.cdf(d1)-L*_exp(-r1*T)*_norm.cdf(d2)
 		else //Put
